@@ -1,0 +1,43 @@
+const boom = require('@hapi/boom');
+
+class TaskService {
+    tasks;
+    constructor() {
+        this.tasks = [];
+    }
+
+    async get() {
+        if(this.tasks.length <= 0) throw boom.notFound("Tasks not found");
+        return this.tasks;
+    }
+
+    async find(id) {
+        const task = this.tasks.find(task => task.id == id);
+        if(!task) throw boom.notFound("Tasks not found");
+        return group;
+    }
+
+    async update(id, body) {
+        const task = this.tasks.find(task => task.id == id);
+        if(!task) throw boom.notFound("Tasks not found");
+        const index = this.tasks.indexOf(task);
+        this.tasks[index] = {
+            ...task,
+            ...body,
+        }
+        return this.tasks[index];
+    }
+
+    async create(body) {
+        const { name } = body;
+        if(this.tasks.find(task => task.name.toLowerCase() == name.toLowerCase()))
+            throw boom.conflict("Task name is already in use");
+        const task = {
+            id: this.tasks.length,
+            ...body,
+        }
+        this.tasks.push(task);
+        return task;
+    }
+}
+module.exports = TaskService;
