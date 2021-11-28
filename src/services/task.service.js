@@ -29,14 +29,16 @@ class TaskService {
     }
 
     async create(body) {
-        const { name } = body;
-        if(this.tasks.find(task => task.name.toLowerCase() == name.toLowerCase()))
-            throw boom.conflict("Task name is already in use");
         const task = {
             id: this.tasks.length,
             ...body,
         }
         this.tasks.push(task);
+        return task;
+    }
+    async delete(id){
+        const task = this.tasks.find(task => task.id == id);
+        this.tasks.splice(this.tasks.indexOf(task), 1);
         return task;
     }
 }

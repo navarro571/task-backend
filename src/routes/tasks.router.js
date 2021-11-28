@@ -64,4 +64,14 @@ router.patch("/:id", [
   }
 ]);
 
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const taskDeleted = await service.delete(id);
+    res.status(200).json(taskDeleted);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

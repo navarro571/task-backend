@@ -7,7 +7,6 @@ const { errorLogger, errorBoomHandler, errorHandler, errorJoiHandler} = require(
 const app = express();
 const PORT = 3000;
 
-
 const options = {
     origin: 'http://localhost:3005',
     optionsSuccessStatus: 200
@@ -22,7 +21,7 @@ app.get('/', (req, res) => {
 
 const routerV1 = express.Router();
 app.use('/api/v1', routerV1);
-routerV1.use('/taskgroups', taskgroups);
+routerV1.use('/tasksgroups', taskgroups);
 routerV1.use('/tasks', tasks);
 
 app.use(errorLogger);
@@ -33,7 +32,6 @@ app.use(errorHandler);
 app.get('*', (req, res) => {
     res.status(404).send("NOT FOUND");
 });
-
 
 app.listen(PORT, () => {
     console.log(`Listen localhost:${PORT}`);
