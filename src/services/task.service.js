@@ -20,10 +20,11 @@ class TaskService {
         const task = this.tasks.find(task => task.id == id);
         if(!task) throw boom.notFound("Tasks not found");
         const index = this.tasks.indexOf(task);
-        this.tasks[index] = {
+        this.tasks.splice(index, 1);
+        this.tasks.push({
             ...task,
             ...body,
-        }
+        });
         return this.tasks[index];
     }
 
