@@ -7,7 +7,6 @@ class TaskService {
     }
 
     async get() {
-        if(this.tasks.length <= 0) throw boom.notFound("Tasks not found");
         return this.tasks;
     }
 

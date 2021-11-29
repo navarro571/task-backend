@@ -53,6 +53,15 @@ router.put('/:id', [
     }
 ]);
 
-
+router.delete("/:id", async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const groupDeleted = await service.delete(id);
+      res.status(200).json(groupDeleted);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
 
 module.exports = router;

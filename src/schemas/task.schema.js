@@ -2,7 +2,7 @@ const joi = require('joi');
 
 const groupid = joi.number();
 const name = joi.string().min(1).max(50);
-const description = joi.string();
+const description = joi.string().allow("");
 
 const createTaskSchema = joi.object({
     groupid: groupid.required(),

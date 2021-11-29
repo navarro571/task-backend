@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 
 const routerV1 = express.Router();
 app.use('/api/v1', routerV1);
-routerV1.use('/tasksgroups', taskgroups);
+routerV1.use('/taskgroups', taskgroups);
 routerV1.use('/tasks', tasks);
 
 app.use(errorLogger);

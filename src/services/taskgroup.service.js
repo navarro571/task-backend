@@ -10,7 +10,6 @@ class TaskGroupService {
     }
 
     async get() {
-        if(this.taskgroups.length <= 0) throw boom.notFound("Groups list empty");
         return this.taskgroups;
     }
 
@@ -39,6 +38,12 @@ class TaskGroupService {
             ...body,
         }
         this.taskgroups.push(group);
+        return group;
+    }
+
+    async delete(id){
+        const group = this.taskgroups.find(group => group.id == id);
+        this.taskgroups.splice(this.taskgroups.indexOf(group), 1);
         return group;
     }
 }
