@@ -53,15 +53,7 @@ class TaskGroupService {
         if(!group) throw boom.notFound("Group not found");
         groups.splice(groups.indexOf(group), 1);
         this.taskgroups.set(key, groups);
-        //this.refreshID(key);
         return group;
     }
-
-    /*refreshID(key){
-        const groups = this.taskgroups.get(key);
-        groups.map(group => {
-            group.id = groups.indexOf(group);
-        })
-    }*/
 }
 module.exports = TaskGroupService;

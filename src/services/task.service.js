@@ -43,15 +43,7 @@ class TaskService {
         if(!task) throw boom.notFound("Task not found");
         tasks.splice(tasks.indexOf(task), 1);
         this.tasks.set(key, tasks);
-        //this.refreshID(key);
         return task;
     }
-
-    /*refreshID(key){
-        const tasks = this.tasks.get(key);
-        tasks.map(task => {
-            task.id = tasks.indexOf(task);
-        })
-    }*/
 }
 module.exports = TaskService;

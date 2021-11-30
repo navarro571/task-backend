@@ -8,7 +8,7 @@ const app = express();
 const PORT = 3000;
 
 const options = {
-    origin: 'http://localhost:3005',
+    origin: ['http://localhost:3005','https://taskmanagerpj.netlify.app'],
     optionsSuccessStatus: 200
 }
 
