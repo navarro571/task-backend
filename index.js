@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const taskgroups = require('./routes/taskgroups.router');
-const tasks = require('./routes/tasks.router');
-const { errorLogger, errorBoomHandler, errorHandler, errorJoiHandler} = require('./middlewares/error.handler');
+const taskgroups = require('./src/routes/taskgroups.router');
+const tasks = require('./src/routes/tasks.router');
+const { errorLogger, errorBoomHandler, errorHandler, errorJoiHandler} = require('./src/middlewares/error.handler');
 
 const app = express();
 const PORT = 3000;
