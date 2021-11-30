@@ -5,8 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js",
-    "eslint": "eslint"
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "",
@@ -19,5 +18,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "joi": "^17.4.2"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }
