@@ -3,43 +3,55 @@ const boom = require('@hapi/boom');
 class TaskService {
     tasks;
     constructor() {
-        this.tasks = [];
+        this.tasks = new Map();
     }
 
-    async get() {
-        return this.tasks;
+    async get(key) {
+        if(!this.tasks.has(key)) this.tasks.set(key, []);
+        return this.tasks.get(key);
     }
 
-    async find(id) {
-        const task = this.tasks.find(task => task.id == id);
+    async update(key, id, body) {
+        if(!this.tasks.has(key)) this.tasks.set(key, []);
+        const tasks = this.tasks.get(key);
+        const task = tasks.find(task => task.id == id);
         if(!task) throw boom.notFound("Tasks not found");
-        return group;
-    }
-
-    async update(id, body) {
-        const task = this.tasks.find(task => task.id == id);
-        if(!task) throw boom.notFound("Tasks not found");
-        const index = this.tasks.indexOf(task);
-        this.tasks.splice(index, 1);
-        this.tasks.push({
+        const index = tasks.indexOf(task);
+        tasks[index] = {
             ...task,
             ...body,
-        });
-        return this.tasks[index];
+        };
+        this.tasks.set(key, tasks);
+        return tasks[index];
     }
 
-    async create(body) {
+    async create(key, body) {
+        if(!this.tasks.has(key)) this.tasks.set(key, []);
+        const tasks = this.tasks.get(key);
         const task = {
-            id: this.tasks.length,
+            id: tasks.length,
             ...body,
         }
-        this.tasks.push(task);
+        tasks.push(task);
+        this.tasks.set(key, tasks);
         return task;
     }
-    async delete(id){
-        const task = this.tasks.find(task => task.id == id);
-        this.tasks.splice(this.tasks.indexOf(task), 1);
+    async delete(key, id){
+        if(!this.tasks.has(key)) this.tasks.set(key, []);
+        const tasks = this.tasks.get(key);
+        const task = tasks.find(task => task.id == id);
+        if(!task) throw boom.notFound("Task not found");
+        tasks.splice(tasks.indexOf(task), 1);
+        this.tasks.set(key, tasks);
+        //this.refreshID(key);
         return task;
     }
+
+    /*refreshID(key){
+        const tasks = this.tasks.get(key);
+        tasks.map(task => {
+            task.id = tasks.indexOf(task);
+        })
+    }*/
 }
 module.exports = TaskService;

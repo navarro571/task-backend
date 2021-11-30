@@ -9,7 +9,8 @@ const service = new TaskService();
 
 router.get("/", async (req, res, next) => {
   try {
-    const tasks = await service.get();
+    const { key } = req.query;
+    let tasks = await service.get(key);
     res.status(200).json(tasks);
   } catch (error) {
     next(error);
@@ -20,7 +21,8 @@ router.post("/", [
   Validate(createTaskSchema, 'body'),
   async (req, res, next) => {
     try {
-      const newTask = await service.create(req.body);
+      const { key } = req.query;
+      const newTask = await service.create(key, req.body);
       res.status(201).json(newTask);
     } catch (error) {
       next(error);
@@ -28,22 +30,12 @@ router.post("/", [
   }
 ]);
 
-router.get("/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const task = await service.find(id);
-    res.status(200).json(task);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.put("/:id", [
+router.put("/", [
   Validate(updateTaskSchema, 'body'),
   async (req, res, next) => {
     try {
-      const { id } = req.params;
-      const taskUpdated = await service.update(id, req.body);
+      const { id, key } = req.query;
+      const taskUpdated = await service.update(key, id, req.body);
       res.status(202).json(taskUpdated);
     } catch (error) {
       next(error);
@@ -51,12 +43,12 @@ router.put("/:id", [
   }
 ]);
 
-router.patch("/:id", [
+router.patch("/", [
   Validate(updatePartialTaskSchema, 'body'),
   async (req, res, next) => {
     try {
-      const { id } = req.params;
-      const taskUpdated = await service.update(id, req.body);
+      const { id, key } = req.query;
+      const taskUpdated = await service.update(key, id, req.body);
       res.status(202).json(taskUpdated);
     } catch (error) {
       next(error);
@@ -64,10 +56,10 @@ router.patch("/:id", [
   }
 ]);
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/", async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const taskDeleted = await service.delete(id);
+    const { id, key } = req.query;
+    const taskDeleted = await service.delete(key, id);
     res.status(200).json(taskDeleted);
   } catch (error) {
     next(error);

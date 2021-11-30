@@ -3,48 +3,65 @@ const boom = require('@hapi/boom');
 class TaskGroupService {
     taskgroups;
     constructor() {
-        this.taskgroups = [];
-        this.taskgroups.push({ id: this.taskgroups.length, name: "TASKS" });
-        this.taskgroups.push({ id: this.taskgroups.length, name: "DOING" });
-        this.taskgroups.push({ id: this.taskgroups.length, name: "DONE" });
+        this.taskgroups = new Map();
     }
 
-    async get() {
-        return this.taskgroups;
+    async get(key) {
+        if(!this.taskgroups.has(key)) this.taskgroups.set(key, []);
+        return this.taskgroups.get(key);
     }
 
-    async find(id) {
-        const group = this.taskgroups.find(group => group.id == id);
+    async find(key, id) {
+        if(!this.taskgroups.has(key)) this.taskgroups.set(key, []);
+        const group = this.taskgroups.get(key).find(group => group.id == id);
         if(!group) throw boom.notFound("Group not found");
         return group;
     }
 
-    async update(id, body) {
-        const index = this.taskgroups.findIndex(group => group.id == id);
+    async update(key, id, body) {
+        if(!this.taskgroups.has(key)) this.taskgroups.set(key, []);
+        const groups = this.taskgroups.get(key);
+        const index = groups.findIndex(group => group.id == id);
         if(index === -1) throw boom.notFound("Group not found");
-        this.taskgroups[index] = {
+        groups[index] = {
             id: index,
             ...body,
         }
-        return this.taskgroups[index];
+        this.taskgroups.set(key, groups);
+        return groups[index];
     }
 
-    async create(body) {
+    async create(key, body) {
+        if(!this.taskgroups.has(key)) this.taskgroups.set(key, []);
+        const groups = this.taskgroups.get(key);
         const { name } = body;
-        if(this.taskgroups.find(group => group.name.toLowerCase() == name.toLowerCase()))
+        if(groups.find(group => group.name.toLowerCase() == name.toLowerCase()))
             throw boom.conflict("Group name is already in use");
         const group = {
-            id: this.taskgroups.length,
+            id: groups.length,
             ...body,
         }
-        this.taskgroups.push(group);
+        groups.push(group);
+        this.taskgroups.set(key, groups);
         return group;
     }
 
-    async delete(id){
-        const group = this.taskgroups.find(group => group.id == id);
-        this.taskgroups.splice(this.taskgroups.indexOf(group), 1);
+    async delete(key, id){
+        if(!this.taskgroups.has(key)) this.taskgroups.set(key, []);
+        const groups = this.taskgroups.get(key);
+        const group = groups.find(group => group.id == id);
+        if(!group) throw boom.notFound("Group not found");
+        groups.splice(groups.indexOf(group), 1);
+        this.taskgroups.set(key, groups);
+        //this.refreshID(key);
         return group;
     }
+
+    /*refreshID(key){
+        const groups = this.taskgroups.get(key);
+        groups.map(group => {
+            group.id = groups.indexOf(group);
+        })
+    }*/
 }
 module.exports = TaskGroupService;
