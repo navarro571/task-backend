@@ -5,7 +5,7 @@ const tasks = require('./src/routes/tasks.router');
 const { errorLogger, errorBoomHandler, errorHandler, errorJoiHandler} = require('./src/middlewares/error.handler');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const options = {
     origin: ['http://localhost:3005','https://taskmanagerpj.netlify.app'],
@@ -33,6 +33,4 @@ app.get('*', (req, res) => {
     res.status(404).send("NOT FOUND");
 });
 
-app.listen(PORT, () => {
-    console.log(`Listen localhost:${PORT}`);
-});
+app.listen(PORT);
