@@ -1,49 +1,37 @@
 const boom = require('@hapi/boom');
+const { models } = require('../lib/sequelize');
 
 class TaskService {
-    tasks;
-    constructor() {
-        this.tasks = new Map();
+    constructor() {}
+
+    async get() {
+        return models.Task.findAll();
     }
 
-    async get(key) {
-        if(!this.tasks.has(key)) this.tasks.set(key, []);
-        return this.tasks.get(key);
+    async find(id){
+        const task = await models.Task.findByPk(id);
+        if(!task) throw boom.notFound('Task not found');
+        return task;
     }
 
-    async update(key, id, body) {
-        if(!this.tasks.has(key)) this.tasks.set(key, []);
-        const tasks = this.tasks.get(key);
-        const task = tasks.find(task => task.id == id);
-        if(!task) throw boom.notFound("Tasks not found");
-        const index = tasks.indexOf(task);
-        tasks[index] = {
-            ...task,
-            ...body,
+    async update(id, body) {
+        const task = await this.find(id);
+        const res = await task.update(body);
+        return res;
+    }
+
+    async create(body) {
+        const newTask = await models.Task.create(body);
+        return newTask;
+    }
+
+    async delete(id) {
+        const task = await this.find(id);
+        await task.destroy();
+        return {
+            message: 'Task deleted',
+            taskId: id,
         };
-        this.tasks.set(key, tasks);
-        return tasks[index];
-    }
-
-    async create(key, body) {
-        if(!this.tasks.has(key)) this.tasks.set(key, []);
-        const tasks = this.tasks.get(key);
-        const task = {
-            id: tasks.length,
-            ...body,
-        }
-        tasks.push(task);
-        this.tasks.set(key, tasks);
-        return task;
-    }
-    async delete(key, id){
-        if(!this.tasks.has(key)) this.tasks.set(key, []);
-        const tasks = this.tasks.get(key);
-        const task = tasks.find(task => task.id == id);
-        if(!task) throw boom.notFound("Task not found");
-        tasks.splice(tasks.indexOf(task), 1);
-        this.tasks.set(key, tasks);
-        return task;
     }
 }
 module.exports = TaskService;

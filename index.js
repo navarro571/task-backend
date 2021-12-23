@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const taskgroups = require('./src/routes/taskgroups.router');
 const tasks = require('./src/routes/tasks.router');
+const keys = require('./src/routes/key.router');
 const { errorLogger, errorBoomHandler, errorHandler, errorJoiHandler} = require('./src/middlewares/error.handler');
 
 const app = express();
@@ -23,6 +24,7 @@ const routerV1 = express.Router();
 app.use('/api/v1', routerV1);
 routerV1.use('/taskgroups', taskgroups);
 routerV1.use('/tasks', tasks);
+routerV1.use('/keys', keys);
 
 app.use(errorLogger);
 app.use(errorJoiHandler);

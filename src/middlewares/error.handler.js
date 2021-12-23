@@ -13,6 +13,7 @@ function errorJoiHandler(error, req, res, next) {
     }
     next(error);
 }
+
 function errorBoomHandler(error, req, res, next) {
     if(error.isBoom) {
         const { output } = error;
@@ -23,8 +24,9 @@ function errorBoomHandler(error, req, res, next) {
     }
     next(error);
 }
+
 function errorHandler(error, req, res, next) {
-    res.status(400).send(error.message);
+    res.status(500).send(error.message);
 }
 
 module.exports = {

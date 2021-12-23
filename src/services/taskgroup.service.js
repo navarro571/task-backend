@@ -1,59 +1,39 @@
-const boom = require('@hapi/boom');
+const boom = require("@hapi/boom");
+const { models } = require("../lib/sequelize");
 
 class TaskGroupService {
-    taskgroups;
-    constructor() {
-        this.taskgroups = new Map();
-    }
+  constructor() {}
 
-    async get(key) {
-        if(!this.taskgroups.has(key)) this.taskgroups.set(key, []);
-        return this.taskgroups.get(key);
-    }
+  async get() {
+    return models.Group.findAll();
+  }
 
-    async find(key, id) {
-        if(!this.taskgroups.has(key)) this.taskgroups.set(key, []);
-        const group = this.taskgroups.get(key).find(group => group.id == id);
-        if(!group) throw boom.notFound("Group not found");
-        return group;
-    }
+  async find(id) {
+    const group = await models.Group.findByPk(id, {
+      include: ['tasks'],
+    });
+    if (!group) throw boom.notFound("Group not found");
+    return group;
+  }
 
-    async update(key, id, body) {
-        if(!this.taskgroups.has(key)) this.taskgroups.set(key, []);
-        const groups = this.taskgroups.get(key);
-        const index = groups.findIndex(group => group.id == id);
-        if(index === -1) throw boom.notFound("Group not found");
-        groups[index] = {
-            id: index,
-            ...body,
-        }
-        this.taskgroups.set(key, groups);
-        return groups[index];
-    }
+  async update(id, body) {
+    const group = await this.find(id);
+    const res = await group.update(body);
+    return res;
+  }
 
-    async create(key, body) {
-        if(!this.taskgroups.has(key)) this.taskgroups.set(key, []);
-        const groups = this.taskgroups.get(key);
-        const { name } = body;
-        if(groups.find(group => group.name.toLowerCase() == name.toLowerCase()))
-            throw boom.conflict("Group name is already in use");
-        const group = {
-            id: groups.length,
-            ...body,
-        }
-        groups.push(group);
-        this.taskgroups.set(key, groups);
-        return group;
-    }
+  async create(body) {
+    const newGroup = await models.Group.create(body);
+    return newGroup;
+  }
 
-    async delete(key, id){
-        if(!this.taskgroups.has(key)) this.taskgroups.set(key, []);
-        const groups = this.taskgroups.get(key);
-        const group = groups.find(group => group.id == id);
-        if(!group) throw boom.notFound("Group not found");
-        groups.splice(groups.indexOf(group), 1);
-        this.taskgroups.set(key, groups);
-        return group;
-    }
+  async delete(id) {
+    const group = await this.find(id);
+    await group.destroy();
+    return {
+      message: "Group deleted",
+      taskId: id,
+    };
+  }
 }
 module.exports = TaskGroupService;
