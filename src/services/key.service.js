@@ -8,15 +8,16 @@ class KeyService {
         return models.Key.findAll();
     }
 
-    async find(id){
-        const key = await models.Key.findByPk(id, {
+    async find(key){
+        const res = await models.Key.findOne({
+            where: { key },
             include: {
                 association: "groups",
                 include: ['tasks'],
             }
         });
-        if(!key) throw boom.notFound('Key not found');
-        return key;
+        if(!res) throw boom.notFound('Key not found');
+        return res;
     }
 
     async create(body) {

@@ -17,12 +17,12 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:id", [
+router.get("/:key", [
   Validate(getKeySchema, "params"),
   async (req, res, next) => {
     try {
-      const { id } = req.params;
-      let serviceRes = await service.find(id);
+      const { key } = req.params;
+      let serviceRes = await service.find(key);
       res.status(200).json(serviceRes);
     } catch (error) {
       next(error);
@@ -43,9 +43,9 @@ router.post("/", [
   },
 ]);
 
-router.delete("/", async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
-    const { id } = req.query;
+    const { id } = req.params;
     const keyDeleted = await service.delete(id);
     res.status(200).json(keyDeleted);
   } catch (error) {

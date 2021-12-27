@@ -41,11 +41,11 @@ router.post("/", [
   }
 ]);
 
-router.put("/", [
+router.put("/:id", [
   Validate(updateTaskSchema, 'body'),
   async (req, res, next) => {
     try {
-      const { id } = req.query;
+      const { id } = req.params;
       const taskUpdated = await service.update(id, req.body);
       res.status(202).json(taskUpdated);
     } catch (error) {
@@ -54,11 +54,11 @@ router.put("/", [
   }
 ]);
 
-router.patch("/", [
+router.patch("/:id", [
   Validate(updatePartialTaskSchema, 'body'),
   async (req, res, next) => {
     try {
-      const { id } = req.query;
+      const { id } = req.params;
       const taskUpdated = await service.update(id, req.body);
       res.status(202).json(taskUpdated);
     } catch (error) {
@@ -67,9 +67,9 @@ router.patch("/", [
   }
 ]);
 
-router.delete("/", async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
-    const { id } = req.query;
+    const { id } = req.params;
     const taskDeleted = await service.delete(id);
     res.status(200).json(taskDeleted);
   } catch (error) {
